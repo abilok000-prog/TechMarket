@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMarket — Себет</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">Tech<span>Market</span><span class="dot"></span></a>
+
+  <div class="nav-links">
+    <a href="index.html">Каталог</a>
+    <a href="cart.html" class="active">Себет</a>
+    <a href="wishlist.html">Таңдаулылар</a>
+  </div>
+
+  <div class="nav-actions">
+    <a href="login.html" class="btn btn-ghost" id="loginNavBtn">Кіру</a>
+    <div class="user-menu" id="userMenu" style="display:none">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="dropdown-name" id="dropdownName">Пайдаланушы</div>
+        <div class="dropdown-email" id="dropdownEmail"></div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="window.location='wishlist.html'">❤️ Таңдаулылар</div>
+        <div class="dropdown-item" onclick="window.location='index.html'">📱 Каталог</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="logout()">↩ Шығу</div>
+      </div>
+    </div>
+    <a href="cart.html" class="btn btn-primary">
+      🛒 Себет
+      <span class="cart-count-badge" id="cartBadge">0</span>
+    </a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <h1 class="page-title">🛒 Себет</h1>
+
+  <!-- ORDER SUCCESS -->
+  <div id="orderSuccess" class="order-success">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Тапсырыс қабылданды!</div>
+    <div class="success-sub">Тапсырысыңыз рәсімделді. Жақын арада байланысамыз!</div>
+    <a href="index.html" class="btn btn-primary" style="padding:0.9rem 2rem;font-size:1rem">Тағы сатып ал 🚀</a>
+  </div>
+
+  <!-- CART CONTENT -->
+  <div class="cart-page-content">
+    <div class="cart-layout" id="cartLayout">
+      <div class="cart-items" id="cartItems"></div>
+      <div class="summary" id="cartSummary" style="display:none">
+        <div class="summary-title">📋 Тапсырыс жиынтығы</div>
+        <div class="summary-row"><span>Тауарлар:</span><span id="sumCount">0 дана</span></div>
+        <div class="summary-row"><span>Жеткізу:</span><span style="color:var(--success)">Тегін 🎁</span></div>
+        <div class="summary-row" id="discountRow" style="display:none">
+          <span>Жеңілдік:</span>
+          <span id="discountAmount" style="color:var(--success)">−0 ₸</span>
+        </div>
+        <div class="promo-row">
+          <input class="promo-input" id="promoInput" placeholder="Промокод">
+          <button class="promo-apply" onclick="applyPromo()">Қолдану</button>
+        </div>
+        <div class="promo-success" id="promoFeedback"></div>
+        <div class="summary-row total">
+          <span>Барлығы:</span>
+          <span id="sumTotal">0 ₸</span>
+        </div>
+        <button class="checkout-btn" onclick="checkout()">Тапсырыс беру →</button>
+        <button class="clear-btn" onclick="clearCart()">Себетті тазалау</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script src="script.js"></script>
+<script>
+function renderCartSummary() {
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  let totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('sumCount').textContent = totalQty + ' дана';
+  
+  if (currentPromo) {
+    const discount = Math.round(totalPrice * currentPromo.discount / 100);
+    document.getElementById('discountRow').style.display = 'flex';
+    document.getElementById('discountAmount').textContent = '−' + discount.toLocaleString('kk-KZ') + ' ₸';
+    totalPrice -= discount;
+  } else {
+    document.getElementById('discountRow').style.display = 'none';
+  }
+
+  document.getElementById('sumTotal').textContent = totalPrice.toLocaleString('kk-KZ') + ' ₸';
+}
+
+function renderCart() {
+  const items = document.getElementById('cartItems');
+  const summary = document.getElementById('cartSummary');
+
+  if (!cart.length) {
+    items.innerHTML = `
+      <div class="empty-cart">
+        <div class="empty-cart-icon">🛒</div>
+        <div class="empty-cart-title">Себет бос</div>
+        <div class="empty-cart-sub">Каталогтан ұнаған тауарыңызды таңдаңыз</div>
+        <a href="index.html" class="btn btn-primary" style="padding:0.85rem 2rem;font-size:0.95rem">Тауар қарау →</a>
+      </div>`;
+    summary.style.display = 'none';
+    return;
+  }
+
+  summary.style.display = 'block';
+
+  items.innerHTML = cart.map(item => {
+    const imgHTML = item.image
+      ? `<img src="${item.image}" alt="${item.name}">`
+      : item.emoji;
+    return `
+    <div class="cart-item">
+      <div class="item-thumb">${imgHTML}</div>
+      <div class="item-info">
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">${(item.price * item.qty).toLocaleString('kk-KZ')} ₸</div>
+        <div class="item-unit">${item.price.toLocaleString('kk-KZ')} ₸ × ${item.qty} дана</div>
+      </div>
+      <div class="item-controls">
+        <div class="qty-btn" onclick="changeQty(${item.id}, -1); renderCart()">−</div>
+        <div class="qty-num">${item.qty}</div>
+        <div class="qty-btn" onclick="changeQty(${item.id}, 1); renderCart()">+</div>
+        <button class="remove-btn" onclick="removeFromCart(${item.id}); renderCart()" title="Жою">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderCartSummary();
+}
+
+function checkout() {
+  const user = localStorage.getItem('tmUser');
+  if (!user) { window.location.href = 'login.html'; return; }
+  cart = []; saveCart();
+  document.querySelector('.cart-page-content').style.display = 'none';
+  document.querySelector('.page-title').style.display = 'none';
+  document.getElementById('orderSuccess').style.display = 'block';
+}
+
+renderCart();
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMarket — Таңдаулылар</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">Tech<span>Market</span><span class="dot"></span></a>
+  <div class="nav-links">
+    <a href="index.html">Каталог</a>
+    <a href="cart.html">Себет</a>
+    <a href="wishlist.html" class="active">Таңдаулылар</a>
+  </div>
+  <div class="nav-actions">
+    <a href="login.html" class="btn btn-ghost" id="loginNavBtn">Кіру</a>
+    <div class="user-menu" id="userMenu" style="display:none">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="dropdown-name" id="dropdownName">Пайдаланушы</div>
+        <div class="dropdown-email" id="dropdownEmail"></div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="window.location='index.html'">📱 Каталог</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="logout()">↩ Шығу</div>
+      </div>
+    </div>
+    <a href="cart.html" class="btn btn-primary">
+      🛒 Себет
+      <span class="cart-count-badge" id="cartBadge">0</span>
+    </a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <h1 class="page-title">❤️ Таңдаулылар</h1>
+  <div class="products-grid" id="wishGrid"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script src="script.js"></script>
+<script>
+const CATEGORY_LABELS = {
+  smartphone: 'Смартфон', camera: 'Камера',
+  tv: 'Теледидар', smart: 'Смарт'
+};
+
+function renderWishlist() {
+  const grid = document.getElementById('wishGrid');
+  const items = PRODUCTS.filter(p => wishlist.includes(p.id));
+
+  if (!items.length) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-icon">❤️</div>
+        <div class="empty-text" style="margin-bottom:1.5rem">Таңдаулылар бос</div>
+        <a href="index.html" class="btn btn-primary" style="padding:0.85rem 2rem">Каталогқа өту →</a>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map(p => {
+    const inCart = cart.find(x => x.id === p.id);
+    const imgHTML = p.image
+      ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
+      : `<div class="card-img-emoji">${p.emoji}</div>`;
+    const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+
+    return `
+    <div class="product-card">
+      ${p.badge === 'sale' ? `<div class="card-badges"><span class="badge badge-sale">−${discount}%</span></div>` : ''}
+      <button class="wish-btn active" onclick="toggleWishlist(${p.id});renderWishlist()">❤️</button>
+      <div class="card-img">${imgHTML}</div>
+      <div class="card-body">
+        <div class="card-category">${CATEGORY_LABELS[p.category]} · ${p.brand || ''}</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-specs">${p.specs}</div>
+        <div class="card-footer">
+          <div class="price-wrap">
+            <span class="price">${p.price.toLocaleString('kk-KZ')} ₸</span>
+            ${p.oldPrice ? `<span class="old-price">${p.oldPrice.toLocaleString('kk-KZ')} ₸</span>` : ''}
+          </div>
+          <button class="add-btn ${inCart ? 'added' : ''}" onclick="addToCart(${p.id});renderWishlist()">
+            ${inCart ? '✓ Себетте' : '+ Себет'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderWishlist();
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMarket — Технологиялар дүкені</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">Tech<span>Market</span><span class="dot"></span></a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Каталог</a>
+    <a href="cart.html">Себет</a>
+    <a href="wishlist.html">Таңдаулылар</a>
+    <a href="#about">Біз туралы</a>
+  </div>
+  <div class="nav-actions">
+    <a href="login.html" class="btn btn-ghost" id="loginNavBtn">Кіру</a>
+    <div class="user-menu" id="userMenu" style="display:none">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="dropdown-name" id="dropdownName">Пайдаланушы</div>
+        <div class="dropdown-email" id="dropdownEmail"></div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="window.location='wishlist.html'">❤️ Таңдаулылар</div>
+        <div class="dropdown-item" onclick="window.location='cart.html'">🛒 Себет</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="logout()">↩ Шығу</div>
+      </div>
+    </div>
+    <a href="cart.html" class="btn btn-primary">
+      🛒 Себет <span class="cart-count-badge" id="cartBadge">0</span>
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow"><span>⚡</span> 2026 Жаңа коллекция</div>
+    <h1 class="hero-title">Болашақтың<br><span class="outline">Технологиясы</span><br>Бүгін, Қазір</h1>
+    <p class="hero-desc">Смартфондар, камералар, теледидарлар және смарт құрылғылар — бәрі бір жерде, ең жақсы бағамен.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">Каталогты ашу →</button>
+      <a href="#about" class="btn btn-ghost">Бізді тану</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">200+</div><div class="stat-label">Тауар</div></div>
+      <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Бренд</div></div>
+      <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Рейтинг</div></div>
+      <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-label">Қолдау</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-glow"></div>
+    <div class="hero-device"><img src="etrgr.webp" alt="iPhone 17 Pro"></div>
+    <div class="floating-chip"><div class="chip-dot"></div>Жедел жеткізу</div>
+    <div class="floating-chip"><div class="chip-dot" style="background:#7c3aed;box-shadow:0 0 8px #7c3aed"></div>Кепілдік 2 жыл</div>
+    <div class="floating-chip"><div class="chip-dot" style="background:var(--warning);box-shadow:0 0 8px var(--warning)"></div>Жаңа жинақ!</div>
+  </div>
+</section>
+
+<div class="promo-banner">
+  <div class="banner-card fire" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">
+    <div class="banner-bg-icon">🔥</div>
+    <div class="banner-label">Мега Акция</div>
+    <div class="banner-title">Ыстық бағалар 🔥</div>
+    <div class="banner-sub">30%-ға дейін жеңілдік таңдаулы тауарларға</div>
+  </div>
+  <div class="banner-card new-year" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">
+    <div class="banner-bg-icon">✨</div>
+    <div class="banner-label">Жаңа жинақ</div>
+    <div class="banner-title">iPhone 17 Серия ✨</div>
+    <div class="banner-sub">Apple-дің ең жаңа флагмандары жеткелді!</div>
+  </div>
+</div>
+
+<div id="catalog">
+  <div class="controls-section">
+    <div class="controls-row">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="searchInput" type="text" placeholder="Тауар, бренд іздеу...">
+      </div>
+      <select class="sort-select" id="sortSelect">
+        <option value="default">Сұрыптау</option>
+        <option value="price-asc">Арзаннан қымбатқа</option>
+        <option value="price-desc">Қымбаттан арзанға</option>
+        <option value="rating">Рейтинг бойынша</option>
+      </select>
+    </div>
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-cat="all">Барлығы</button>
+      <button class="filter-tab" data-cat="smartphone">📱 Смартфондар</button>
+      <button class="filter-tab" data-cat="camera">📷 Камералар</button>
+      <button class="filter-tab" data-cat="tv">📺 Теледидар</button>
+      <button class="filter-tab" data-cat="smart">🥽 Смарт</button>
+    </div>
+  </div>
+
+  <section class="products-section">
+    <div class="section-header">
+      <div class="section-title" id="sectionTitle">Барлық тауарлар</div>
+      <div class="section-count" id="sectionCount"></div>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+</div>
+
+<section id="about" style="max-width:1240px;margin:0 auto 5rem;padding:0 2.5rem">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:24px;padding:3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center">
+    <div>
+      <div class="hero-eyebrow" style="margin-bottom:1rem">📦 Біз туралы</div>
+      <h2 style="font-family:var(--font-display);font-weight:800;font-size:2rem;letter-spacing:-1px;margin-bottom:1rem">TechMarket — Сенімді технология дүкені</h2>
+      <p style="color:var(--text-dim);line-height:1.8;margin-bottom:1.5rem">2020 жылдан бері Қазақстанда жұмыс жасаймыз. Барлық тауарлар түпнұсқа, ресми кепілдікпен.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;text-align:center"><div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent)">50K+</div><div style="color:var(--muted);font-size:0.8rem">Бақытты клиент</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;text-align:center"><div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent)">4.9★</div><div style="color:var(--muted);font-size:0.8rem">Орташа баға</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;text-align:center"><div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent)">2h</div><div style="color:var(--muted);font-size:0.8rem">Жеткізу Алматы</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;text-align:center"><div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent)">100%</div><div style="color:var(--muted);font-size:0.8rem">Түпнұсқа тауар</div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;display:flex;gap:1rem;align-items:center"><span style="font-size:2rem">🚀</span><div><div style="font-family:var(--font-display);font-weight:700;margin-bottom:0.2rem">Жедел жеткізу</div><div style="color:var(--muted);font-size:0.85rem">Алматы бойынша 2 сағатта</div></div></div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;display:flex;gap:1rem;align-items:center"><span style="font-size:2rem">🛡️</span><div><div style="font-family:var(--font-display);font-weight:700;margin-bottom:0.2rem">Ресми кепілдік</div><div style="color:var(--muted);font-size:0.85rem">1-2 жыл ресми кепілдік</div></div></div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;display:flex;gap:1rem;align-items:center"><span style="font-size:2rem">↩</span><div><div style="font-family:var(--font-display);font-weight:700;margin-bottom:0.2rem">30 күн қайтару</div><div style="color:var(--muted);font-size:0.85rem">Тауар ұнамаса 30 күн ішінде</div></div></div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;display:flex;gap:1rem;align-items:center"><span style="font-size:2rem">💳</span><div><div style="font-family:var(--font-display);font-weight:700;margin-bottom:0.2rem">Бөліп төлеу</div><div style="color:var(--muted);font-size:0.85rem">Kaspi, Halyk, Jusan — 0% жарна</div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo" style="margin-bottom:0.8rem;display:inline-flex">Tech<span>Market</span></a>
+      <p class="footer-desc">Қазақстанның ең үлкен технологиялар маркетплейсі.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Каталог</div>
+      <a class="footer-link" href="#">📱 Смартфондар</a>
+      <a class="footer-link" href="#">📷 Камералар</a>
+      <a class="footer-link" href="#">📺 Теледидар</a>
+      <a class="footer-link" href="#">🥽 Смарт</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Клиентке</div>
+      <a class="footer-link" href="cart.html">🛒 Себет</a>
+      <a class="footer-link" href="wishlist.html">❤️ Таңдаулылар</a>
+      <a class="footer-link" href="login.html">👤 Профиль</a>
+    </div>
+    <div>
+      <div class="footer-col-title">Байланыс</div>
+      <a class="footer-link" href="tel:+77075039541">📞 +7 707 503 95 41 </a>
+      <a class="footer-link" href="mailto:info@techmarket.kz">✉️ info@techmarket.kz</a>
+      <a class="footer-link" href="#">📍 Алматы, Абай 44</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 TechMarket — Барлық құқықтар қорғалған</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span id="toastMsg">Себетке қосылды!</span>
+</div>
+
+<script src="script.js"></script>
+<script>
+var CATEGORY_LABELS = { smartphone:'Смартфон', camera:'Камера', tv:'Теледидар', smart:'Смарт' };
+var currentCat = 'all';
+var currentSearch = '';
+var currentSort = 'default';
+
+function getFiltered() {
+  var list = PRODUCTS.slice();
+  if (currentCat !== 'all') list = list.filter(function(p){ return p.category === currentCat; });
+  if (currentSearch) {
+    var q = currentSearch.toLowerCase();
+    list = list.filter(function(p){
+      return p.name.toLowerCase().includes(q) || p.specs.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q));
+    });
+  }
+  if (currentSort === 'price-asc') list.sort(function(a,b){ return a.price - b.price; });
+  else if (currentSort === 'price-desc') list.sort(function(a,b){ return b.price - a.price; });
+  else if (currentSort === 'rating') list.sort(function(a,b){ return b.rating - a.rating; });
+  return list;
+}
+
+function renderProducts() {
+  var grid = document.getElementById('productsGrid');
+  var list = getFiltered();
+  var titles = { all:'Барлық тауарлар', smartphone:'📱 Смартфондар', camera:'📷 Камералар', tv:'📺 Теледидарлар', smart:'🥽 Смарт құрылғылар' };
+  document.getElementById('sectionTitle').textContent = titles[currentCat];
+  document.getElementById('sectionCount').textContent = list.length + ' тауар';
+
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Тауар табылмады</div></div>';
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var p = list[i];
+    var inCart = null;
+    for (var j = 0; j < cart.length; j++) { if (cart[j].id === p.id) { inCart = cart[j]; break; } }
+    var inWish = wishlist.indexOf(p.id) !== -1;
+    var discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+
+    var badges = '';
+    if (p.badge === 'hot') badges += '<span class="badge badge-hot">🔥 ХИТ</span>';
+    if (p.badge === 'new') badges += '<span class="badge badge-new">✨ ЖАҢА</span>';
+    if (p.badge === 'sale') badges += '<span class="badge badge-sale">−' + discount + '%</span>';
+    var badgeHTML = badges ? '<div class="card-badges">' + badges + '</div>' : '';
+
+    var imgHTML = p.image
+      ? '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy" style="width:100%;height:100%;object-fit:cover">'
+      : '<div class="card-img-emoji">' + p.emoji + '</div>';
+
+    var starsCount = Math.floor(p.rating);
+    var stars = '';
+    for (var s = 0; s < starsCount; s++) stars += '★';
+    if (p.rating % 1 >= 0.5) stars += '½';
+
+    var oldPriceHTML = p.oldPrice ? '<span class="old-price">' + p.oldPrice.toLocaleString() + ' ₸</span>' : '';
+    var addBtnText = inCart ? '✓ ' + inCart.qty + ' дана' : '+ Себет';
+    var addBtnClass = 'add-btn' + (inCart ? ' added' : '');
+
+    html += '<div class="product-card">' +
+      badgeHTML +
+      '<button class="wish-btn ' + (inWish ? 'active' : '') + '" onclick="event.stopPropagation();toggleWishlist(' + p.id + ')">❤️</button>' +
+      '<div class="card-img">' + imgHTML + '</div>' +
+      '<div class="card-body">' +
+        '<div class="card-category">' + CATEGORY_LABELS[p.category] + ' · ' + (p.brand || '') + '</div>' +
+        '<div class="card-name">' + p.name + '</div>' +
+        '<div class="card-specs">' + p.specs + '</div>' +
+        '<div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.8rem">' +
+          '<span style="color:var(--warning);font-size:0.8rem">' + stars + '</span>' +
+          '<span style="color:var(--muted);font-size:0.75rem">(' + p.reviews + ')</span>' +
+        '</div>' +
+        '<div class="card-footer">' +
+          '<div class="price-wrap">' +
+            '<span class="price">' + p.price.toLocaleString() + ' ₸</span>' +
+            oldPriceHTML +
+          '</div>' +
+          '<button class="' + addBtnClass + '" onclick="event.stopPropagation();addToCart(' + p.id + ')">' + addBtnText + '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+document.getElementById('filterTabs').addEventListener('click', function(e) {
+  var tab = e.target.closest('.filter-tab');
+  if (!tab) return;
+  document.querySelectorAll('.filter-tab').forEach(function(t){ t.classList.remove('active'); });
+  tab.classList.add('active');
+  currentCat = tab.dataset.cat;
+  renderProducts();
+});
+
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  currentSearch = e.target.value;
+  renderProducts();
+});
+
+document.getElementById('sortSelect').addEventListener('change', function(e) {
+  currentSort = e.target.value;
+  renderProducts();
+});
+
+renderProducts();
+</script>
+</body>
+</html>
